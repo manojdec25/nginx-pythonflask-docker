@@ -4,11 +4,16 @@
 PROJECT=pythondockerwebapp
 NGINX=nginxwebserver
 FLASKAPP=flaskappserver
-
-DOCKER_HUB_REPO=manojdec25/kaldocker
-DOCKER_HUB_REPO_PORT=5000
-
 NETWORK=docker-net
+
+while getopts r:n: option
+do
+case "${option}"
+in
+r) DOCKER_REPO=${OPTARG};;
+n) NETWORK=${OPTARG};;
+esac
+done
 
 
 kill_and_remove_docker_container() {
@@ -26,10 +31,10 @@ docker rm $FLASKAPP
 clean_docker_image() {
 
 echo "Building $FLASKAPP"
-make -C $FLASKAPP clean
+make DOCKER_REPO=$DOCKER_REPO -C $FLASKAPP clean
 
 echo "Cleaning $NGINX"
-make -C $NGINX clean
+make DOCKER_REPO=$DOCKER_REPO  -C $NGINX clean
 
 }
 
